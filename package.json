@@ -17,6 +17,7 @@
     "clean": "next lint --fix && tsc --noEmit && prettier --write ."
   },
   "dependencies": {
+    "@ai-sdk/openai": "^0.0.33",
     "@auth/prisma-adapter": "^1.4.0",
     "@hookform/resolvers": "^3.3.4",
     "@prisma/client": "^5.9.1",
@@ -48,7 +49,7 @@
     "@trigger.dev/nextjs": "^2.3.18",
     "@trigger.dev/react": "^2.3.18",
     "@trigger.dev/sdk": "^2.3.18",
-    "ai": "^3.0.9",
+    "ai": "^3.2.9",
     "canvas-confetti": "^1.9.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",

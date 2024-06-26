@@ -7,7 +7,7 @@ import {
 import type { PageParams } from "@/types/next";
 import { getNote } from "../../dashboard/note.query";
 import { requiredAuth } from "@/lib/auth/helper";
-import { NodeCard } from "./NodeCard";
+import { NoteCard } from "./NoteCard";
 
 export default async function RoutePage(props: PageParams<{ noteId: string }>) {
   const user = await requiredAuth();
@@ -32,7 +32,7 @@ export default async function RoutePage(props: PageParams<{ noteId: string }>) {
         <LayoutTitle></LayoutTitle>
       </LayoutHeader>
       <LayoutContent>
-        <NodeCard note={note} />
+        <NoteCard note={note} />
       </LayoutContent>
     </Layout>
   );

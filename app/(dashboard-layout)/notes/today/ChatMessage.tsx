@@ -6,10 +6,13 @@ import { Bot, User2 } from "lucide-react";
 export type ChatMessageProps = {
   type: "user" | "assistant";
   message?: string;
+  children?: React.ReactNode;
 };
 
 export default function ChatMessage(props: ChatMessageProps) {
-  return (
+  return props.children ? (
+    <div>{props.children}</div>
+  ) : (
     <div>
       <Typography variant="small" className="inline-flex items-center gap-1">
         {props.type === "user" ? (

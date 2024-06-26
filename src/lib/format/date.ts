@@ -6,5 +6,5 @@ export const formatDateAndTime = (date: Date) => {
 };
 
 export const formatDate = (date: Date) => {
-  return format(date, "MMMM d, yyyy", { locale: fr });
+  return format(date, "d MMMM yyyy", { locale: fr });
 };
