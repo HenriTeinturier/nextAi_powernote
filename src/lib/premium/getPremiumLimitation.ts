@@ -21,10 +21,9 @@ export const getPremiumLimitation = async () => {
     },
   });
 
-  //TODO remettre à 10 le remaining notes
   return {
     maxNotes: 10,
-    remainingNotes: 1 - totalNotes,
+    remainingNotes: 10 - totalNotes,
     percentUsed: (totalNotes / 10) * 100,
   };
 };
