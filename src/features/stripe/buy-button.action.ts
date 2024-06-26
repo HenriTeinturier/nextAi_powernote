@@ -12,14 +12,19 @@ const BuyButtonSchema = z.object({
 
 export const buyButtonAction = action(BuyButtonSchema, async (data) => {
   const { priceId } = data;
+  console.log("priceId", priceId);
 
   const user = await auth();
+  console.log("user", user);
 
   const stripeCustomerId = user?.stripeCustomerId ?? undefined;
+  console.log("stripeCustomerId", stripeCustomerId);
 
   const price = await stripe.prices.retrieve(priceId);
+  console.log("price", price);
 
   const priceType = price.type;
+  console.log("priceType", priceType);
 
   const session = await stripe.checkout.sessions.create({
     customer: stripeCustomerId,

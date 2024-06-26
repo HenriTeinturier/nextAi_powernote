@@ -13,21 +13,6 @@ import { Loader } from "lucide-react";
 import { Typography } from "@/components/ui/typography";
 import { NoteCard } from "../../notes/[noteId]/NodeCard";
 
-// const ToolLoader = ({
-//   action,
-//   params,
-// }: {
-//   action: string;
-//   params: unknown;
-// }) => {
-//   return (
-//     <ChatMessage
-//       type="assistant"
-//       message={`Loading... ${action} ${JSON.stringify(params)}`}
-//     />
-//   );
-// };
-
 const ToolLoader = ({
   action,
   params,
@@ -47,13 +32,6 @@ const ToolLoader = ({
   );
 };
 
-// type UserMessageActionResult = {
-//   id: string;
-//   role: "assistant" | "user";
-//   display: React.ReactNode;
-// };
-
-// export const submitUserMessageAction = authAction(
 export const submitUserMessageAction = authAction(
   z.object({ userInput: z.string() }),
   async (input, context): Promise<UIStateType> => {

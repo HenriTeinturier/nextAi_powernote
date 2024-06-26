@@ -11,9 +11,33 @@ import React from "react";
 import { CreateNoteChatForm } from "./CreateNoteChatForm";
 import { getTodayDate } from "@/lib/note-utils/date";
 import { Typography } from "@/components/ui/typography";
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import { getPremiumLimitation } from "@/lib/premium/getPremiumLimitation";
 
 export default async function today() {
   const user = await requiredAuth();
+  const limitation = await getPremiumLimitation();
+  console.log("limitation", limitation);
+
+  if (limitation.remainingNotes <= 0) {
+    return (
+      <Layout>
+        <LayoutHeader>
+          <LayoutTitle>You reach the limit of notes</LayoutTitle>
+          <LayoutDescription>
+            As a free user, you can only create {limitation.maxNotes} notes.
+          </LayoutDescription>
+        </LayoutHeader>
+        <LayoutContent>
+          <Link href="/upgrade" className={buttonVariants({ size: "lg" })}>
+            Upgrade to premium
+          </Link>
+        </LayoutContent>
+      </Layout>
+    );
+  }
+
   const todayDate = getTodayDate();
   const configurations = await prisma.configuration.findMany({
     where: {
