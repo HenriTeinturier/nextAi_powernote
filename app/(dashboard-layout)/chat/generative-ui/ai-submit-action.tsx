@@ -1,7 +1,7 @@
 "use server";
 
 import { authAction } from "@/lib/server-actions/safe-actions";
-import { getMutableAIState, streamUI } from "ai/rsc";
+import { getMutableAIState, streamUI, useUIState } from "ai/rsc";
 import { z } from "zod";
 import type { AIChat, AIStateType, UIStateType } from "./ai-sdk-chat";
 import { openai } from "@ai-sdk/openai";
@@ -12,6 +12,7 @@ import { formatDate } from "@/lib/format/date";
 import { Loader } from "lucide-react";
 import { Typography } from "@/components/ui/typography";
 import { NoteCard } from "../../notes/[noteId]/NodeCard";
+import { ConfigurationType } from "@prisma/client";
 
 const ToolLoader = ({
   action,
@@ -119,8 +120,97 @@ export const submitUserMessageAction = authAction(
             );
           },
         },
+        create_configuration: {
+          description: `Create a new configuration. A configuration is a field that the user want to fill in his daily note `,
+          parameters: z
+            .object({
+              name: z.string(),
+              description: z.string(),
+              type: z.nativeEnum(ConfigurationType),
+            })
+            .required(),
+          generate: async function* ({ name, description, type }) {
+            yield (
+              <ToolLoader
+                action="create_configuration"
+                params={{ name, description, type }}
+              />
+            );
+
+            const newConfiguration = await prisma.configuration.create({
+              data: {
+                name,
+                description,
+                type,
+                userId: context.user.id,
+              },
+            });
+
+            // Mise à jour du state afin que l'ia puisse me répondre à ce propos.
+            // aiState.done([
+            //   ...aiState.get(),
+            //   {
+            //     role: "assistant",
+            //     content: `Configuration created:  ${newConfiguration.name}`,
+            //   },
+            // ]);
+
+            const responseUI = await streamUI({
+              model: openai("gpt-4o"),
+              messages: [
+                ...aiState.get(),
+                {
+                  role: "assistant",
+                  content: `create a response to inform the user that the configurations has benn created
+                  information: ${JSON.stringify(newConfiguration)}
+                  response format:
+                  - always use ${context.user.language} languages.
+                  - Today, we are the ${formatDate(new Date())}
+                  
+                  Response format:
+                  Je ne veu pas que tu affiches le détail. Je veux que tu faces une phrase style tu écris un SMS à un copain.
+                  just write a message like a SMS. Ne met pas l'id, le type et encore moins l'userId. Juste un message texte.
+                  `,
+                },
+              ], // on ajoute les messages + le message de l'utilisateur
+              text: ({ content, done }) => {
+                if (done) {
+                  aiState.update((aiState) => [
+                    ...aiState,
+                    {
+                      role: "assistant",
+                      content: `content`,
+                    },
+                  ]);
+                }
+                return <ChatMessage type="assistant" message={content} />;
+              },
+            });
+
+            // aiState.done([
+            //   ...aiState.get(),
+            //   {
+            //     role: "assistant",
+            //     content: responseUI.value,
+            //   },
+            // ]);
+
+            return (
+              <div>{responseUI.value} </div>
+              // <div className="w-40 bg-red-6000">test ui</div>
+              // <ChatMessage
+              //   type="assistant"
+              //   message={`Configuration created:  ${newConfiguration.name}`}
+              // />
+            );
+          },
+        },
       },
     });
+
+    console.log("ai state get juste avant le retour ui", aiState.get());
+    // console.log("result stream", result.stream);
+    // console.log('chat', getCh())
 
     return {
       id: Date.now().toString(),

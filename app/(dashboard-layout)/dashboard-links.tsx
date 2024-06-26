@@ -1,5 +1,5 @@
 import type { NavigationLinkGroups } from "@/features/navigation/navigation.type";
-import { LayoutDashboard, Settings } from "lucide-react";
+import { LayoutDashboard, MessageCircle, Settings } from "lucide-react";
 
 export const DASHBOARD_LINKS: NavigationLinkGroups[] = [
   {
@@ -13,6 +13,11 @@ export const DASHBOARD_LINKS: NavigationLinkGroups[] = [
         title: "Configuration",
         icon: <Settings />,
         url: "/configuration",
+      },
+      {
+        title: "Chat",
+        icon: <MessageCircle />,
+        url: "/chat",
       },
     ],
   },
